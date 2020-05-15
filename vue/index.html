@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My first Vue Application</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+            crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="container">
+        <div>
+            <h1>{{message}}</h1>
+        </div>
+        <form>
+            <input type="text" placeholder="Username" v-model="username" v-bind:class="{ 'error-border':    inputUsernameError}"/>
+            <div class="error" v-if="showUsernameError">Please enter a correct username</div>
+            <br />
+            <input type="password" placeholder="Password" v-model="password" v-bind:class="{ 'error-border':    inputPasswordError}"/>
+            <div class="error" v-if="showPasswordError">Please enter a correct password</div>
+            <br />
+            <button type="button" v-on:click="login">Submit</button>
+        </form>
+        <div class="[ row ]">
+            <jobs-list :detail="details" >
+            </jobs-list>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+    <script>
+        // set storage variables for username and password.
+        (function () {
+            localStorage.setItem('username', 'Jorun');
+            localStorage.setItem('password', '@1234');
+        })();
+
+        Vue.component('jobs-list',{
+            props: [ 'detail' ],
+            template: 
+            '<div class="[ col-sm-4 ]">'+
+            '<div class="[ card ]">'+
+                '<div>'+
+                '<img :src="detail.companyLogo" />'+
+                '</div>'+
+                '<div class="[ card--information ]"><br />'+
+                    '<span>Date Created: </span> {{ detail.dateCreate }}<br />'+
+                    '<span>Title: </span> {{ detail.title}} <br />'+
+                    '<span>Company Name: </span> {{ detail.companyName }}<br />'+
+                    '<span>Location: </span> {{ detail.location }} <br />'+
+                    '<span>Type: </span> {{ detail.type }}<br />'+
+                    '<span>Desciption: </span> {{ detail.description }}<br />'+
+                    '<span>How to apply: </span> {{ detail.howToApply }}<br />'+
+                    '<span>Company Website: </span> <a :href="detail.website" target="_blank">Click Here</a><br />'+
+                '</div>'+
+            '</div>'+
+            '</div>',
+        })
+
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'Please enter your login details',
+                username: '',
+                password: '',
+                showUsernameError: false,
+                showPasswordError: false,
+                inputUsernameError: false,
+                inputPasswordError: false,
+                details: {
+                    componyLogo: 'http://via.placeholder.com/350x150',
+                    dateCreate: '14-02-2020',
+                    title: 'Junior Front End Developer',
+                    companyName: '',
+                    location: 'Nøtterøy, Norway',
+                    type: 'permanent',
+                    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
+                    howToApply: 'Click here',
+                    website: 'http://www.google.com'
+                }
+            },
+            
+            methods: {
+                login: function(e){
+                    if(this.username !== localStorage.getItem('username') || this.password !== localStorage.getItem('password')){
+                        if(this.username !== localStorage.getItem('username')){
+                            this.message = 'Please enter correct login details';
+                            this.showUsernameError = true;
+                            this.inputUsernameError = true;
+                       }
+                        else{
+                            this.showUsernameError = false;
+                            this.inputUsernameError = false;
+                       }
+                        if(this.password !== localStorage.getItem('password')){
+                            this.message = 'Please enter correct login details';
+                            this.showPasswordError = true;
+                            this.inputPasswordError = true;
+                           }
+                        else{
+                            this.showPasswordError = false;
+                            this.inputPasswordError = false;
+                        }
+                    }
+                    else{
+                        this.message ='Welcome back, ' + this.username;
+                        this.showPasswordError = false;
+                        this.inputPasswordError = false;
+                        this.showUsernameError = false;
+                        this.inputUsernameError = false;
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>
+<!-- From lines 10 to 19 we create a simple HTML form which has a textbox, a password field and a button. On line 12 you will notice some weird HTML. No need to worry about that for now, we will get to that later.
+On line 20 we import the Vue.js library so that we can make use of methods and functions
+On lines 23 to 26 we write code for a self-calling function. If you remember the syntax inside the function, it will set variables for us inside our browser's storage. You can change the username and password to be whatever you would like it to be. We are simulating a login here, so this will be our credentials.
+On lines 28 to 33 we create a new Vue.js instance. This instance will take in an object as an argument.
+The first key is el; el stands for element and this will be the element that we want Vue.js to bind to. In this case it will be the div with app as the id.
+The data key will hold all data that we need to allow the application to be populated. In this case we will set the value of message to “Please enter your login details”.
+While cd’ed into the directory in your terminal, run the node command to start a server and open it up in your browser.
+You should notice that the {{message}} variable now has the text which you defined for message in your Vue.js object. This is called interpolation. It allows us to add variables to HTML. -->
+
+<!--V-model gives us the ability to bind data so that we may make use of it inside our application. On the button that we created we use the v-on:click method. This method will take a value of a function we are going to define in the next section.-->
+
+<!--On lines 32 – 33 we created new keys for our variables inside our data method, this will enable Vue.js to bind the inputs which we created in our HTML. The values will be set to blank as we only require values once a user adds text in each input respectively.
+From lines 35 – 45 we see Vue.js gives us a new key called methods. We can define custom functions inside this key.
+If you remember correctly, we bound a function to the button in our HTML. This is the section where we will define what happens when the button is clicked.
+We create a simple if else statement which tests to see if what the user entered is in local storage. We can access variables by means of the “this” keyword and then the variable name. The “this” keyword can mean different things in different places. We will dive into this later in the course.
+If the credentials are the same as what is in local storage, the user will be greeted with a message. As you can see the message gets changed randomly. This is referred to as data binding.
+If the credentials are incorrect the user will be notified by means of the message on top.-->

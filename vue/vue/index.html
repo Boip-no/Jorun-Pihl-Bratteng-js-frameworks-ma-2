@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My First Vue Application</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app" class="container">
+        <div>
+            <h1>{{message}}</h1>
+        </div>
+        <form>
+            <input type="text" placeholder="Username" v-model="username" v-bind:class="{ 'error-border':  inputUsernameError }" />
+            <div class="error" v-if="showUsernameError">Please enter a correct username</div>
+            <br />
+            <input type="password" placeholder="Password" v-model="password" v-bind:class="{ 'error-border':  inputPasswordError }" />
+            <div class="error" v-if="showPasswordError">Please enter a correct password</div>
+            <br />
+            <button type="button" v-on:click="login">Submit</button>
+        </form>
+
+        <div class="[ row ]">
+            <jobs-list :detail="details" >
+            </jobs-list>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+    <script>
+        // set storage variables for username and password.  
+        (function () {
+            localStorage.setItem('username', 'Cameron');
+            localStorage.setItem('password', '@1234');
+        })();
+
+        Vue.component('jobs-list',{
+            props: [ 'detail' ],
+            template: 
+            '<div class="[ col-sm-4 ]">'+
+            '<div class="[ card ]">'+
+                '<div>'+
+                '<img :src="detail.companyLogo" />'+
+                '</div>'+
+                '<div class="[ card--information ]"><br />'+
+                        '<span>Date Created: </span> {{ detail.dateCreated }}<br />'+
+                        '<span>Title: </span> {{ detail.title }}<br />'+
+                        '<span>Company Name: </span>{{ detail.companyName }}<br />'+
+                        '<span>Location: </span>{{ detail.location }}<br />'+
+                        '<span>Type: </span>{{ detail.type }}<br />'+
+                        '<span>Description: </span>{{ detail.description }}<br />'+
+                        '<span>How to apply: </span>{{ detail.howToApply }}<br />'+
+                        '<span>Company Website: </span><a :href="detail.website" target="_blank">Click Here</a><br />'+
+                '</div>'+   
+            ' </div>'+
+            '</div>',
+        })
+
+        new Vue({
+            el: '#app',
+            data: {
+                message: 'Please enter your login details',
+                username: '',
+                password: '',
+                showUsernameError: false,
+                showPasswordError: false,
+                inputUsernameError: false,
+                inputPasswordError: false,
+                details: {
+                        companyLogo: 'http://via.placeholder.com/350x150',
+                        dateCreated: '14-02-2018',
+                        title: 'Senior Front End Web Developer',
+                        companyName: 'Petes Design Studios',
+                        location: 'Cape Town, South Africa',
+                        type: 'permanent',
+                        description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
+                        howToApply: 'click here',
+                        website: 'http://www.google.com'
+                    }
+            },
+            methods: {
+                login: function(e){
+                    if(this.username !== localStorage.getItem("username") || this.password !== localStorage.getItem("password")){
+                        if(this.username !== localStorage.getItem("username")){
+                            this.message = 'Please enter correct login details';
+                            this.showUsernameError = true;
+                            this.inputUsernameError = true;
+                        }
+                        else{
+                            this.showUsernameError = false;
+                            this.inputUsernameError = false;
+                        }
+                        if(this.password !== localStorage.getItem("password")){
+                            this.message = 'Please enter correct login details';
+                            this.showPasswordError = true;
+                            this.inputPasswordError = true;
+                        }
+                        else{
+                            this.showPasswordError = false;
+                            this.inputPasswordError = false;
+                        }
+                    }
+                    else{
+                            this.message = 'Welcome back ' + this.username;
+                            this.showPasswordError = false;
+                            this.inputPasswordError = false;
+                            this.showUsernameError = false;
+                            this.inputUsernameError = false;
+                    }
+                    
+                }
+            }
+        })
+    </script>
+</body>
+</html
